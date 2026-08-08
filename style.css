@@ -1,0 +1,338 @@
+:root {
+  --bg-navy: #0b0e2c;
+  --bg-navy-2: #12153a;
+  --surface: #171a44;
+  --surface-2: #1f2350;
+  --violet: #7b2ff7;
+  --violet-soft: #9b5cf9;
+  --cyan: #4cf1e0;
+  --coral: #ff5e7e;
+  --text: #f5f3ff;
+  --text-muted: #8a8cb3;
+  --danger: #ff5e7e;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(123, 47, 247, 0.35),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 90%,
+      rgba(76, 241, 224, 0.2),
+      transparent 50%
+    ),
+    linear-gradient(
+      160deg,
+      var(--bg-navy) 0%,
+      var(--bg-navy-2) 55%,
+      #0d1030 100%
+    );
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  color: var(--text);
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+/* ---------------- Calculator shell ---------------- */
+
+.calculator {
+  width: min(100%, 380px);
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.015)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  backdrop-filter: blur(6px);
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------------- Display ---------------- */
+
+.display {
+  position: relative;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, var(--surface), var(--bg-navy-2));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 22px 20px 18px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.display-glow {
+  position: absolute;
+  inset: -40% -20% auto -20%;
+  height: 140%;
+  background: radial-gradient(
+    circle,
+    rgba(123, 47, 247, 0.35),
+    transparent 65%
+  );
+  filter: blur(20px);
+  animation: pulseGlow 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateY(6px);
+  }
+}
+
+.expression {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  min-height: 18px;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.expression::-webkit-scrollbar {
+  display: none;
+}
+
+.result {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(32px, 9vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  text-shadow: 0 0 24px rgba(123, 47, 247, 0.35);
+  transition: color 0.2s ease;
+}
+.result::-webkit-scrollbar {
+  display: none;
+}
+
+.result.is-error {
+  color: var(--coral);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* ---------------- Keys grid ---------------- */
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.key {
+  position: relative;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  padding: 18px 0;
+  color: var(--text);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.key:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.key:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* number keys */
+.key--num {
+  background: var(--surface-2);
+  box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.6);
+}
+
+.key--zero {
+  grid-column: span 2;
+}
+
+/* utility keys: AC, DEL, % */
+.key--util {
+  background: rgba(255, 94, 126, 0.12);
+  color: var(--coral);
+  font-size: 16px;
+  box-shadow: 0 6px 14px -8px rgba(255, 94, 126, 0.25);
+}
+.key--util:hover {
+  background: rgba(255, 94, 126, 0.22);
+}
+
+/* operator keys */
+.key--op {
+  background: rgba(76, 241, 224, 0.12);
+  color: var(--cyan);
+  box-shadow: 0 6px 14px -8px rgba(76, 241, 224, 0.25);
+}
+.key--op:hover {
+  background: rgba(76, 241, 224, 0.22);
+}
+.key--op.is-active {
+  background: var(--cyan);
+  color: var(--bg-navy);
+  box-shadow: 0 0 0 2px rgba(76, 241, 224, 0.4);
+}
+
+/* equals key */
+.key--equals {
+  background: linear-gradient(135deg, var(--violet), var(--violet-soft));
+  color: #fff;
+  box-shadow: 0 10px 24px -8px rgba(123, 47, 247, 0.65);
+}
+.key--equals:hover {
+  filter: brightness(1.12);
+}
+
+/* ripple */
+.key .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(0);
+  animation: rippleAnim 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* ---------------- Hint ---------------- */
+
+.hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}
+.hint kbd {
+  font-family: var(--font-body);
+  background: var(--surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 420px) {
+  .calculator {
+    padding: 16px;
+  }
+  .key {
+    padding: 16px 0;
+    font-size: 17px;
+  }
+  .keys {
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calculator,
+  .display-glow,
+  .result.is-error,
+  .key {
+    animation: none !important;
+    transition: none !important;
+  }
+}
